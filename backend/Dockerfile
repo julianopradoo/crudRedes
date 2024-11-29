@@ -6,13 +6,13 @@ WORKDIR /app
 
 # Copiando os arquivos package.json e package-lock.json para dentro do container
 COPY ./backend/package*.json ./
-COPY ./backend/ .
+
 
 # Instalando as dependências do projeto
 RUN npm install
 
-# Copiando o restante dos arquivos do backend para o diretório de trabalho no container
-
+# Copie o restante dos arquivos do projeto para o container
+COPY . .
 
 # Expondo a porta em que o servidor backend estará rodando
 EXPOSE 3000
