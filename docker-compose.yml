@@ -4,7 +4,6 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: ./backend/Dockerfile
     container_name: backend
     environment:
       - DB_HOST=mariadb
@@ -34,7 +33,6 @@ services:
   frontend:
     build:
       context: ./client
-      dockerfile: ./client/Dockerfile
     container_name: frontend
     ports:
       - "80:80"
