@@ -11,11 +11,10 @@ COPY ./backend/package*.json ./
 RUN npm install
 
 # Copiando o restante dos arquivos do backend para o diretório de trabalho no container
-COPY ./backend /app
+COPY ./backend/ .
 
 # Expondo a porta em que o servidor backend estará rodando
 EXPOSE 3000
 
 # Configurando a variável de ambiente para rodar o servidor
 CMD ["npm", "start"]
-
