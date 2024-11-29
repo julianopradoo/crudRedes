@@ -1,17 +1,52 @@
-// Função para salvar os dados no localStorage
-function salvarCadastro(nome, idade, email) {
-    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-    usuarios.push({ nome, idade, email });
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+const rota = "http://localhost:3000/cadastro";
+
+// Função para salvar os dados no backend
+async function salvarCadastro(nome, idade, email) {
+    const dados = { nome, idade, email };
+    
+    try {
+        const response = await fetch(rota, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dados),
+        });
+
+        if (!response.ok) {
+            throw new Error("Erro ao salvar os dados no backend");
+        }
+
+        const data = await response.json();
+        console.log("Cadastro salvo:", data);
+        alert("Cadastro realizado com sucesso!");
+        exibirUsuarios(); // Atualiza a tabela de usuários
+    } catch (error) {
+        console.error("Erro ao conectar com o backend:", error);
+        alert("Erro ao salvar os dados.");
+    }
 }
 
-// Função para exibir os usuários cadastrados na tabela
-function exibirUsuarios() {
-    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+// Função para buscar todos os cadastros do backend
+async function obterCadastros() {
+    try {
+        const response = await fetch(rota);
+        if (!response.ok) {
+            throw new Error("Erro ao buscar cadastros");
+        }
+
+        const usuarios = await response.json();
+        return usuarios;
+    } catch (error) {
+        console.error("Erro ao buscar cadastros:", error);
+    }
+}
+
+// Função para exibir os usuários na tabela
+async function exibirUsuarios() {
+    const usuarios = await obterCadastros(); // Obtém os usuários do backend
     const tabela = document.getElementById('tabelaUsuarios').getElementsByTagName('tbody')[0];
     tabela.innerHTML = ''; // Limpa a tabela antes de adicionar os novos dados
 
-    usuarios.forEach((usuario, index) => {
+    usuarios.forEach((usuario) => {
         const row = tabela.insertRow();
         const cellNome = row.insertCell(0);
         const cellIdade = row.insertCell(1);
@@ -26,12 +61,12 @@ function exibirUsuarios() {
         const btnEditar = document.createElement('button');
         btnEditar.textContent = 'Editar';
         btnEditar.classList.add('edit');
-        btnEditar.onclick = () => editarUsuario(index);
+        btnEditar.onclick = () => editarUsuario(usuario.id);
 
         const btnExcluir = document.createElement('button');
         btnExcluir.textContent = 'Excluir';
         btnExcluir.classList.add('delete');
-        btnExcluir.onclick = () => excluirUsuario(index);
+        btnExcluir.onclick = () => excluirUsuario(usuario.id);
 
         cellAcoes.appendChild(btnEditar);
         cellAcoes.appendChild(btnExcluir);
@@ -39,9 +74,9 @@ function exibirUsuarios() {
 }
 
 // Função para editar o usuário
-function editarUsuario(index) {
-    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-    const usuario = usuarios[index];
+async function editarUsuario(id) {
+    const usuarios = await obterCadastros();
+    const usuario = usuarios.find(u => u.id === id);
 
     // Preencher o formulário com os dados do usuário
     document.getElementById('nome').value = usuario.nome;
@@ -53,95 +88,74 @@ function editarUsuario(index) {
     form.onsubmit = function(event) {
         event.preventDefault();
 
-        // Atualizar os dados no localStorage
         const nome = document.getElementById('nome').value;
         const idade = document.getElementById('idade').value;
         const email = document.getElementById('email').value;
 
-        usuarios[index] = { nome, idade, email };
-        localStorage.setItem('usuarios', JSON.stringify(usuarios));
-
-        // Limpar e restaurar o formulário
-        exibirUsuarios();
-        form.reset();
-        form.onsubmit = salvarFormulario;
+        atualizarCadastro(id, nome, idade, email);
     };
 }
 
-// Função para salvar o formulário (quando é um novo cadastro)
-function salvarFormulario(event) {
-    event.preventDefault(); // Evita o envio do formulário
+// Função para atualizar o cadastro no backend
+async function atualizarCadastro(id, nome, idade, email) {
+    const dados = { nome, idade, email };
 
-    const nome = document.getElementById('nome').value;
-    const idade = document.getElementById('idade').value;
-    const email = document.getElementById('email').value;
+    try {
+        const response = await fetch(`${rota}/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dados),
+        });
 
-    salvarCadastro(nome, idade, email); // Salva o cadastro
-    exibirUsuarios(); // Atualiza a tabela com os dados
+        if (!response.ok) {
+            throw new Error("Erro ao atualizar os dados");
+        }
 
-    // Limpa os campos do formulário
-    document.getElementById('formCadastro').reset();
+        const data = await response.json();
+        console.log("Cadastro atualizado:", data);
+        alert("Cadastro atualizado com sucesso!");
+        exibirUsuarios(); // Atualiza a tabela de usuários
+    } catch (error) {
+        console.error("Erro ao conectar com o backend:", error);
+        alert("Erro ao atualizar os dados.");
+    }
 }
 
 // Função para excluir o usuário
-function excluirUsuario(index) {
-    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-    usuarios.splice(index, 1); // Remove o usuário pelo índice
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-    exibirUsuarios(); // Atualiza a tabela
+async function excluirUsuario(id) {
+    try {
+        const response = await fetch(`${rota}/${id}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            throw new Error("Erro ao excluir o usuário");
+        }
+
+        console.log("Usuário excluído com sucesso");
+        alert("Usuário excluído com sucesso!");
+        exibirUsuarios(); // Atualiza a tabela de usuários
+    } catch (error) {
+        console.error("Erro ao conectar com o backend:", error);
+        alert("Erro ao excluir o usuário.");
+    }
 }
 
 // Exibe os usuários cadastrados ao carregar a página
 document.addEventListener('DOMContentLoaded', exibirUsuarios);
 
 // Lidar com o envio do formulário
-document.getElementById('formCadastro').onsubmit = salvarFormulario;
+document.getElementById('formCadastro').onsubmit = function(event) {
+    event.preventDefault(); // Evita o envio do formulário
 
-//######################################################################################
+    const nome = document.getElementById('nome').value;
+    const idade = document.getElementById('idade').value;
+    const email = document.getElementById('email').value;
 
-//router.post('/', ...); // Para criar cadastro
-//router.get('/', ...);  // Para listar cadastros
-//router.get('/:id', ...); // Para buscar um cadastro pelo ID
-//router.put('/:id', ...); // Para atualizar um cadastro pelo ID
-//router.delete('/:id', ...); // Para deletar um cadastro pelo ID
-
-// Função para enviar os dados ao backend
-async function enviarCadastro(dados) {
-  try {
-    const response = await fetch("http://localhost:3000/cadastro", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dados),
-    });
-
-    if (!response.ok) {
-      throw new Error("Erro ao salvar os dados no backend");
+    if (!nome || !idade || !email) {
+        alert("Por favor, preencha todos os campos.");
+        return;
     }
 
-    const data = await response.json();
-    console.log("Resposta do backend:", data);
-    alert("Cadastro realizado com sucesso!");
-  } catch (error) {
-    console.error("Erro ao conectar com o backend:", error);
-    alert("Erro ao enviar os dados.");
-  }
-}
-
-// Evento associado ao botão de salvar
-document.getElementById("salvarBtn").addEventListener("click", () => {
-  // Coletando os dados do formulário
-  const dados = {
-    nome: document.getElementById("nome").value,
-    idade: document.getElementById("idade").value,
-    email: document.getElementById("email").value,
-  };
-
-  // Validação básica
-  if (!dados.nome || !dados.idade || !dados.email) {
-    alert("Por favor, preencha todos os campos.");
-    return;
-  }
-
-  // Chamada da função para enviar os dados
-  enviarCadastro(dados);
-});
+    salvarCadastro(nome, idade, email); // Envia o cadastro para o backend
+};

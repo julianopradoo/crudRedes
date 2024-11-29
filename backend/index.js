@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(limiter);
 app.use(cors({
-    origin: ['http://localhost', 'http://localhost:3001', 'http://34.224.187.147'],
+    origin: ['http://localhost', 'http://localhost:3001', 'http://34.224.187.147', 'http://127.0.0.1:5500'],
     methods: ['POST', 'GET', 'PUT', 'DELETE'],
     credentials: true
 }));
