@@ -4,7 +4,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile  # Especifica explicitamente o Dockerfile para evitar confusão
+      dockerfile: Dockerfile  
     container_name: backend
     environment:
       - DB_HOST=mariadb
@@ -17,7 +17,7 @@ services:
       - mariadb
     networks:
       - crudnet
-    restart: unless-stopped  # Política de reinício para garantir alta disponibilidade
+    restart: unless-stopped 
 
   mariadb:
     image: mariadb:latest
@@ -25,7 +25,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: fatec
       MYSQL_DATABASE: crud
-      MYSQL_USER: root  # Definido explicitamente o usuário para maior clareza
+      MYSQL_USER: root  
       MYSQL_PASSWORD: fatec
     ports:
       - "3306:3306"
