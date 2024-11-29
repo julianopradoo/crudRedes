@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: backend
+    environment:
+      - DB_HOST=mariadb
+      - DB_USER=root
+      - DB_PASSWORD=fatec
+      - DB_NAME=crud
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mariadb
+    networks:
+      - crudnet
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: fatec
+      MYSQL_DATABASE: crud
+    ports:
+      - "3306:3306"
+    networks:
+      - crudnet
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: frontend
+    ports:
+      - "80:80"
+    networks:
+      - crudnet
+
+networks:
+  crudnet:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+    driver: local
