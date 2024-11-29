@@ -32,7 +32,8 @@ services:
 
   frontend:
     build:
-      context: ./client
+      context: ./client  # Ajuste o caminho se necessário
+      dockerfile: Dockerfile  # Verifique o nome do arquivo Dockerfile no diretório ./client
     container_name: frontend
     ports:
       - "80:80"
