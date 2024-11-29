@@ -9,6 +9,9 @@ const http = require('http');
 // Importação de rotas do backend
 const cadastroRoutes = require('./routes/cadastroRoute');
 
+// Função de inicialização do banco de dados
+const initializeDatabase = require('./database/dbCreate');
+
 // Configurações do servidor
 const app = express();
 const server = http.createServer(app);
@@ -48,11 +51,29 @@ app.use((req, res, next) => {
 // Rotas do backend
 app.use('/cadastro', cadastroRoutes);
 
-server.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+// Inicialização do banco de dados e servidor
+async function startServer() {
+    try {
+        console.log("Inicializando o banco de dados...");
+        if (process.env.DBCREATE === 'true') {
+          await initializeDatabase(); 
+          console.log("Banco de dados inicializado com sucesso.");
+        } else {
+          console.log("Criação do banco de dados desabilitada.");
+        }
+
+        server.listen(PORT, () => {
+            console.log(`Servidor rodando na porta ${PORT}`);
+        });
+
+    } catch (err) {
+        console.error("Erro ao inicializar o banco de dados:", err);
+        process.exit(1); // Encerra o processo em caso de falha
+    }
+}
+
+startServer();
 
 app.get('/', (req, res) => {
     res.send('Backend funcionando!');
-  });
-  
+});
