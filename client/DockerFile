@@ -1,0 +1,17 @@
+# Usando a imagem oficial do Nginx
+FROM nginx:alpine
+
+# Remover a configuração padrão do Nginx
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copiar a configuração personalizada do Nginx (certifique-se de ter o arquivo nginx.conf)
+COPY ./nginx.conf /etc/nginx/nginx.conf
+
+# Copiar os arquivos de frontend para a pasta padrão do Nginx
+COPY ./client /usr/share/nginx/html
+
+# Expondo a porta 80 (padrão do Nginx)
+EXPOSE 80
+
+# Configurando o comando para rodar o Nginx em segundo plano
+CMD ["nginx", "-g", "daemon off;"]
