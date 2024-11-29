@@ -10,7 +10,7 @@ COPY ./backend/package*.json ./
 # Instalando as dependências do projeto
 RUN npm install
 
-# Copiando o restante dos arquivos para o diretório de trabalho no container
+# Copiando o restante dos arquivos para o diretório  de trabalho no container
 COPY ./backend /app
 
 # Expondo a porta em que o servidor backend estará rodando

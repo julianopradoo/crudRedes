@@ -7,5 +7,5 @@ COPY ./client /usr/share/nginx/html
 # Expondo a porta 80 (padrão do Nginx)
 EXPOSE 80
 
-# Configurando o comando para rodar o Nginx em segundo plano
+# Configurando o comando para rodar o Nginx em segundo  plano
 CMD ["nginx", "-g", "daemon off;"]
