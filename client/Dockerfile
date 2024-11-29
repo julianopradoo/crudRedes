@@ -1,5 +1,5 @@
 # Usando a imagem oficial do Nginx
-FROM nginx
+FROM nginx:stable-alpine
 
 # Copiar os arquivos de configuração do Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
