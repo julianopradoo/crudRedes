@@ -1,21 +1,20 @@
-# Usando a imagem oficial do Node.js
+# Use a versão leve do Node.js baseada em Alpine
 FROM node:18-alpine
 
-# Configurando o diretório de trabalho dentro do container
-WORKDIR /app
+# Defina o diretório de trabalho dentro do container
+WORKDIR /usr/src/app
 
-# Copiando os arquivos package.json e package-lock.json para dentro do container
-COPY ./backend/package*.json ./
+# Copie apenas os arquivos necessários para instalar as dependências
+COPY package*.json ./
 
-
-# Instalando as dependências do projeto
-RUN npm install
+# Instale as dependências com otimizações
+RUN npm install --production
 
 # Copie o restante dos arquivos do projeto para o container
 COPY . .
 
-# Expondo a porta em que o servidor backend estará rodando
+# Exponha a porta 3000 para o servidor Node.js
 EXPOSE 3000
 
-# Configurando a variável de ambiente para rodar o servidor
-CMD ["npm", "start"]
+# Comando para iniciar o servidor Node.js
+CMD ["node", "index.js"]
