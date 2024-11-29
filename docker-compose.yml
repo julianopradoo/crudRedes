@@ -4,6 +4,7 @@ services:
   backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile  # Especifica explicitamente o Dockerfile para evitar confusão
     container_name: backend
     environment:
       - DB_HOST=mariadb
@@ -16,6 +17,7 @@ services:
       - mariadb
     networks:
       - crudnet
+    restart: unless-stopped  # Política de reinício para garantir alta disponibilidade
 
   mariadb:
     image: mariadb:latest
@@ -23,27 +25,39 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: fatec
       MYSQL_DATABASE: crud
+      MYSQL_USER: root  # Definido explicitamente o usuário para maior clareza
+      MYSQL_PASSWORD: fatec
     ports:
       - "3306:3306"
     networks:
       - crudnet
     volumes:
       - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+    restart: unless-stopped
 
   frontend:
     build:
-      context: ./client  # Ajuste o caminho se necessário
-      dockerfile: Dockerfile  # Verifique o nome do arquivo Dockerfile no diretório ./client
+      context: ./client
+      dockerfile: Dockerfile  # Especifica explicitamente o Dockerfile para evitar confusão
     container_name: frontend
     ports:
       - "80:80"
     networks:
       - crudnet
+    depends_on:
+      - backend
+    restart: unless-stopped  # Política de reinício para garantir alta disponibilidade
 
 networks:
   crudnet:
-    driver: bridge
+    driver: bridge  # Mantém a rede de containers isolada
 
 volumes:
   mariadb_data:
-    driver: local
+    driver: local  # Volume persistente para o banco de dados MariaDB
