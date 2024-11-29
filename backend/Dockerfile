@@ -1,5 +1,3 @@
-Dockerfile
-
 # Usando a imagem oficial do Node.js
 FROM node:18-alpine
 

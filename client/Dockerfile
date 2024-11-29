@@ -1,4 +1,3 @@
-# Usando a imagem oficial do Nginx
 FROM nginx:stable-alpine
 
 # Copiar os arquivos de configuração do Nginx
