@@ -1,0 +1,23 @@
+# Ignorar arquivos de logs
+*.log
+
+# Ignorar diretórios de dependências e build
+node_modules
+build
+dist
+
+# Ignorar arquivos específicos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Ignorar arquivos de configuração específicos de IDEs
+.vscode
+.idea
+
+# Ignorar arquivos de teste
+*.test.js
+*.spec.js
+
+# Ignorar outros arquivos irrelevantes para a produção
+*.md
+*.jsonc

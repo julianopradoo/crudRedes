@@ -1,0 +1,41 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Environment Variables
+.env
+
+# Diretórios temporários
+temp/
+tmp/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Configurações do sistema
+*.bak
+*.tmp
+
+# Diretório de build/output
+dist/
+build/
+coverage/
+
+# Outros
+*.pid
+*.seed
+*.pid.lock
