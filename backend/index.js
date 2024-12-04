@@ -29,7 +29,7 @@ app.use(helmet());
 app.use(limiter);
 app.use(cors({
     origin: "*",
-    methods: ['cPOST', 'GET', 'PUT', 'DELETE'],
+    methods: ['POST', 'GET', 'PUT', 'DELETE'],
     credentials: true
 }));
 app.set('view engine', 'ejs');
