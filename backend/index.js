@@ -27,11 +27,13 @@ app.use(express.static(path.join(__dirname, './')));
 app.use(express.json());
 app.use(helmet());
 app.use(limiter);
+// Configuração do CORS
 app.use(cors({
-    origin: 'http://18.215.2.145',
-    methods: ['POST', 'GET', 'PUT', 'DELETE'],
-    credentials: true
-}));
+    origin: '*', // Permitir requisições de qualquer origem
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Cabeçalhos permitidos
+    credentials: true, // Permitir envio de cookies e credenciais
+  }));
 app.set('view engine', 'ejs');
 
 // Middleware para converter BigInt em string
