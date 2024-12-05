@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(limiter);
 app.use(cors({
-    origin: "*",
+    origin: 'http://18.215.2.145',
     methods: ['POST', 'GET', 'PUT', 'DELETE'],
     credentials: true
 }));
