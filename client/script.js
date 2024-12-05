@@ -1,4 +1,4 @@
-const rota = "http://localhost:3000/cadastro";
+const rota = "http://18.215.2.145:3000/cadastro";
 
 // Função para salvar os dados no backend
 async function salvarCadastro(nome, idade, email) {
